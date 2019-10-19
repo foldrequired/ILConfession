@@ -8,7 +8,7 @@ namespace ILConfessions.API.Repositories.V1
 {
     public interface IConfessionRepository
     {
-        Task<List<Confession>> GetConfessionsAsync();
+        Task<List<Confession>> GetConfessionsAsync(PaginationFilter paginationFilter = null);
 
         Task<Confession> GetConfessionByIdAsync(int id);
 
@@ -17,5 +17,7 @@ namespace ILConfessions.API.Repositories.V1
         Task<bool> UpdatConfessionAsync(Confession confessionToUpdate);
 
         Task<bool> DeleteConfessionAsync(int id);
+
+        Task<bool> UserOwnsConfessionAsync(int confessionId, string getUserId);
     }
 }

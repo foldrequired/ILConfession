@@ -8,16 +8,20 @@ using System.Threading.Tasks;
 
 namespace ILConfessions.API.Models
 {
-    public class Confession
+    public class RefreshToken
     {
         [Key]
-        public int Id { get; set; }
+        public string Token { get; set; }
 
-        public string Title { get; set; }
-
-        public string Description { get; set; }
+        public string JwtId { get; set; }
 
         public DateTime CreatedDate { get; set; }
+
+        public DateTime ExpiryDate { get; set; }
+
+        public bool IsUsed { get; set; }
+
+        public bool Invalidated { get; set; }
 
         public string UserId { get; set; }
 

@@ -5,8 +5,9 @@ using System.Threading.Tasks;
 
 namespace ILConfessions.API.Settings.JwtSettings
 {
-    public class JwtOpts
+    public class JwtOptions
     {
-        public string Secret { get; set; }
+        public string TokenSecret { get; set; }
+        public TimeSpan TokenLifecycle { get; set; }
     }
 }

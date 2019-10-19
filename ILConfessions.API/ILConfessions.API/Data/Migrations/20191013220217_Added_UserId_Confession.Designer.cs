@@ -4,14 +4,16 @@ using ILConfessions.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ILConfessions.API.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20191013220217_Added_UserId_Confession")]
+    partial class Added_UserId_Confession
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -38,30 +40,6 @@ namespace ILConfessions.API.Data.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Confessions");
-                });
-
-            modelBuilder.Entity("ILConfessions.API.Models.RefreshToken", b =>
-                {
-                    b.Property<string>("Token")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<DateTime>("CreatedDate");
-
-                    b.Property<DateTime>("ExpiryDate");
-
-                    b.Property<bool>("Invalidated");
-
-                    b.Property<bool>("IsUsed");
-
-                    b.Property<string>("JwtId");
-
-                    b.Property<string>("UserId");
-
-                    b.HasKey("Token");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("RefreshTokens");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -230,13 +208,6 @@ namespace ILConfessions.API.Data.Migrations
                 });
 
             modelBuilder.Entity("ILConfessions.API.Models.Confession", b =>
-                {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-                });
-
-            modelBuilder.Entity("ILConfessions.API.Models.RefreshToken", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
                         .WithMany()

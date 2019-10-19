@@ -15,5 +15,7 @@ namespace ILConfessions.API.Data
         }
 
         public DbSet<Confession> Confessions { get; set; } 
+
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
     }
 }

@@ -1,4 +1,7 @@
-﻿using ILConfessions.API.Repositories.V1;
+﻿using ILConfessions.API.Contracts.V1.Requests;
+using ILConfessions.API.Contracts.V1.Responses;
+using ILConfessions.API.MagicStringHandlers.V1;
+using ILConfessions.API.Repositories.V1;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -23,5 +26,64 @@ namespace ILConfessions.API.Controllers.V1
         }
 
         #endregion
+
+        [HttpPost(ApiRoutes.Auth.Register)]
+        public async Task<IActionResult> Register([FromBody]UserRegisterRequest req)
+        {
+            var authRes = await _repo.RegisterAsync(req.Email, req.Password); 
+
+            if (!authRes.Success)
+            {
+                return BadRequest (new AuthFailResponse
+                {
+                    Errors = authRes.Errors
+                });
+            }
+
+            return Ok(new AuthSuccessResponse {
+                Token = authRes.Token,
+                RefreshToken = authRes.RefreshToken
+            });
+        }
+
+        [HttpPost(ApiRoutes.Auth.Login)]
+        public async Task<IActionResult> Login([FromBody]UserLoginRequest req)
+        {
+            var authRes = await _repo.LoginAsync(req.Email, req.Password);
+
+            if (!authRes.Success)
+            {
+                return BadRequest(new AuthFailResponse
+                {
+                    Errors = authRes.Errors
+                });
+            }
+
+            return Ok(new AuthSuccessResponse
+            {
+                Token = authRes.Token,
+                RefreshToken = authRes.RefreshToken
+            });
+        }
+
+        [HttpPost(ApiRoutes.Auth.Refresh)]
+        public async Task<IActionResult> Refresh([FromBody]RefreshTokenRequest req)
+        {
+            var authRes = await _repo.RefreshTokenAsync(req.Token, req.RefreshToken);
+
+            if (!authRes.Success)
+            {
+                return BadRequest(new AuthFailResponse
+                {
+                    Errors = authRes.Errors
+                });
+            }
+
+            return Ok(new AuthSuccessResponse
+            {
+                Token = authRes.Token,
+                RefreshToken = authRes.RefreshToken
+            });
+        }
     }
 }

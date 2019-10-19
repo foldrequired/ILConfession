@@ -25,9 +25,17 @@ namespace ILConfessions.API.Repositories.V1
 
         #endregion
 
-        public async Task<List<Confession>> GetConfessionsAsync()
+        public async Task<List<Confession>> GetConfessionsAsync(PaginationFilter paginationFilter = null)
         {
-            return await _db.Confessions.ToListAsync();
+            if (paginationFilter == null)
+            {
+                return await _db.Confessions.ToListAsync();
+
+            }
+
+            var skip = (paginationFilter.PageNumber - 1) * paginationFilter.PageSize;
+
+            return await _db.Confessions.Skip(skip).Take(paginationFilter.PageSize).ToListAsync();
         }
 
         public async Task<Confession> GetConfessionByIdAsync(int id)
@@ -68,6 +76,19 @@ namespace ILConfessions.API.Repositories.V1
             var delete = await _db.SaveChangesAsync();
 
             return delete > 0;
+        }
+
+        public async Task<bool> UserOwnsConfessionAsync(int confessionId, string userId)
+        {
+            var confession = await _db.Confessions.AsNoTracking().SingleOrDefaultAsync(c => c.Id == confessionId);
+
+            if (confession == null)
+                return false;
+
+            if (confession.UserId != userId)
+                return false;
+
+            return true;
         }
     }
 }

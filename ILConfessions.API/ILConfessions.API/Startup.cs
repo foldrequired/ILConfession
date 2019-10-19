@@ -20,6 +20,12 @@ using ILConfessions.API.Settings.JwtSettings;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using AutoMapper;
+using FluentValidation.AspNetCore;
+using ILConfessions.API.Filters;
+using System.Reflection;
+using System.IO;
+using Swashbuckle.AspNetCore.Filters;
 
 namespace ILConfessions.API
 {
@@ -39,33 +45,53 @@ namespace ILConfessions.API
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
             services.AddDefaultIdentity<IdentityUser>()
+                .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc(options =>
+            {
+                options.Filters.Add<ValidationFilter>();
+            })
+                .AddFluentValidation(conf => conf.RegisterValidatorsFromAssemblyContaining<Startup>())
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            services.AddAutoMapper(typeof(Startup)/*Assembly*/);
 
             #region Authentication / JWT
 
-            var jwtOptions = new JwtOpts();
-            Configuration.Bind(nameof(JwtOpts), jwtOptions);
+            var jwtOptions = new JwtOptions();
+            Configuration.Bind(nameof(jwtOptions), jwtOptions);
             services.AddSingleton(jwtOptions);
 
-            services.AddAuthentication(auth => {
+            // Token validation settings
+            var tokenValidationParams = new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtOptions.TokenSecret)),
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                RequireExpirationTime = false,
+                ValidateLifetime = true
+            };
+            services.AddSingleton(tokenValidationParams);
+
+            services.AddAuthentication(auth =>
+            {
                 auth.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 auth.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
                 auth.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             })
-                .AddJwtBearer(jwt => {
+                .AddJwtBearer(jwt =>
+                {
                     jwt.SaveToken = true;
-                    jwt.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration.GetSection("ApiSettings:TokenSecret").Value)),
-                        ValidateIssuer = false,
-                        ValidateAudience = false,
-                        RequireExpirationTime = false,
-                        ValidateLifetime = true
-                    };
+                    jwt.TokenValidationParameters = tokenValidationParams;
                 });
+
+            #endregion
+
+            #region Authorization
+
+            services.AddAuthorization();
 
             #endregion
 
@@ -73,6 +99,14 @@ namespace ILConfessions.API
 
             services.AddScoped<IConfessionRepository, ConfessionRepository>();
             services.AddScoped<IAuthRepository, AuthRepository>();
+            services.AddSingleton<IUriRepository>(provider =>
+            {
+                var accessor = provider.GetRequiredService<IHttpContextAccessor>();
+                var request = accessor.HttpContext.Request;
+                var absoluteUri = string.Concat(request.Scheme, "://", request.Host.ToUriComponent(), "/");
+
+                return new UriRepository(absoluteUri);
+            });
 
             #endregion
 
@@ -86,8 +120,10 @@ namespace ILConfessions.API
                     Version = "v1"
                 });
 
+                s.ExampleFilters();
+
                 // For Authorization Access
-                var securityForSwagger = new Dictionary<string, IEnumerable<string>> 
+                var securityForSwagger = new Dictionary<string, IEnumerable<string>>
                 {
                     { "Bearer", new string[0] }
                 };
@@ -101,7 +137,14 @@ namespace ILConfessions.API
                 });
 
                 s.AddSecurityRequirement(securityForSwagger);
+
+                // Allow to generate XML from comments above the Actions (make sure to add it to the .csproj)
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                s.IncludeXmlComments(xmlPath);
             });
+
+            services.AddSwaggerExamplesFromAssemblyOf<Startup>();
 
             #endregion
         }

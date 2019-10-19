@@ -22,8 +22,9 @@ namespace ILConfessions.API.MagicStringHandlers.V1
 
         public static class Auth
         {
-            public const string Login = Base + "auth/login";
-            public const string Register = Base + "auth/register";
+            public const string Register = Base + "/auth/register";
+            public const string Login = Base + "/auth/login";
+            public const string Refresh = Base + "/auth/refresh";
         }
     }
 }
