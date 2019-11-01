@@ -9,7 +9,10 @@ namespace ILConfessions.API.Contracts.V1.Requests
     public class UserRegisterRequest
     {
         [EmailAddress]
+        [Required]
         public string Email { get; set; }
+        
+        [Required]
         public string Password { get; set; }
     }
 }

@@ -26,6 +26,10 @@ using ILConfessions.API.Filters;
 using System.Reflection;
 using System.IO;
 using Swashbuckle.AspNetCore.Filters;
+using System.Net;
+using Microsoft.AspNetCore.Diagnostics;
+using ILConfessions.API.Helpers;
+using ILConfessions.API.Models;
 
 namespace ILConfessions.API
 {
@@ -44,16 +48,24 @@ namespace ILConfessions.API
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
-            services.AddDefaultIdentity<IdentityUser>()
+            services.AddDefaultIdentity<ApplicationUser>()
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
-            services.AddMvc(options =>
+            services.AddMvc().AddJsonOptions(options => {
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+            });
+
+            services.AddCors();
+
+            services.Configure<IdentityOptions>(options => 
             {
-                options.Filters.Add<ValidationFilter>();
-            })
-                .AddFluentValidation(conf => conf.RegisterValidatorsFromAssemblyContaining<Startup>())
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+               options.Password.RequireDigit = true;
+		       options.Password.RequiredLength = 8;
+	    	   options.Password.RequireNonAlphanumeric = false;
+		       options.Password.RequireUppercase = true;
+		       options.Password.RequireLowercase = false;
+            });
 
             services.AddAutoMapper(typeof(Startup)/*Assembly*/);
 
@@ -99,6 +111,7 @@ namespace ILConfessions.API
 
             services.AddScoped<IConfessionRepository, ConfessionRepository>();
             services.AddScoped<IAuthRepository, AuthRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
             services.AddSingleton<IUriRepository>(provider =>
             {
                 var accessor = provider.GetRequiredService<IHttpContextAccessor>();
@@ -158,6 +171,18 @@ namespace ILConfessions.API
             }
             else
             {
+                app.UseExceptionHandler(builder => {
+                    builder.Run(async context => {
+                        context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+
+                        var err = context.Features.Get<IExceptionHandlerFeature>();
+                        if (err != null)
+                        {
+                            context.Response.AddApplicationError(err.Error.Message);
+                            await context.Response.WriteAsync(err.Error.Message);
+                        }
+                    });
+                });
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
@@ -183,7 +208,7 @@ namespace ILConfessions.API
             app.UseStaticFiles();
 
             app.UseAuthentication();
-
+            app.UseCors(c => c.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
             app.UseMvc();
         }
     }

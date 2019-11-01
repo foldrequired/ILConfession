@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ILConfessions.API.Data
 {
-    public class ApplicationDbContext : IdentityDbContext
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -17,5 +17,9 @@ namespace ILConfessions.API.Data
         public DbSet<Confession> Confessions { get; set; } 
 
         public DbSet<RefreshToken> RefreshTokens { get; set; }
+
+        public DbSet<ApplicationUser> ApplicationUsers { get; set; }
+
+        public DbSet<Photo> Photos { get; set; }
     }
 }

@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace ILConfessions.API.Controllers.V1
 {
+    //[ApiController]
     public class AuthController : Controller
     {
         #region Private Readonly Properties
@@ -30,6 +31,14 @@ namespace ILConfessions.API.Controllers.V1
         [HttpPost(ApiRoutes.Auth.Register)]
         public async Task<IActionResult> Register([FromBody]UserRegisterRequest req)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new AuthFailResponse
+                {
+                    Errors = ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage)
+                });
+            }
+
             var authRes = await _repo.RegisterAsync(req.Email, req.Password); 
 
             if (!authRes.Success)

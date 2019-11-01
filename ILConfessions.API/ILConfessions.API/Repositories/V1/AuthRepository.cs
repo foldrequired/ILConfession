@@ -16,14 +16,14 @@ namespace ILConfessions.API.Repositories.V1
 {
     public class AuthRepository : IAuthRepository
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly JwtOptions _jwtOptions;
         private readonly TokenValidationParameters _tokenValidationParameters;
         private readonly ApplicationDbContext _db;
 
         public AuthRepository(
-            UserManager<IdentityUser> userManager,
+            UserManager<ApplicationUser> userManager,
             RoleManager<IdentityRole> roleManager,
             JwtOptions jwtOptions,
             TokenValidationParameters tokenValidationParameters,
@@ -41,7 +41,7 @@ namespace ILConfessions.API.Repositories.V1
         {
             var userExist = await _userManager.FindByEmailAsync(email);
 
-            var newAccount = new IdentityUser
+            var newAccount = new ApplicationUser
             {
                 Email = email,
                 UserName = email,
@@ -149,7 +149,7 @@ namespace ILConfessions.API.Repositories.V1
                     StringComparison.InvariantCultureIgnoreCase);
         }
 
-        private async Task<AuthenticationResult> AuthenticationResultAsync(IdentityUser user)
+        private async Task<AuthenticationResult> AuthenticationResultAsync(ApplicationUser user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
 

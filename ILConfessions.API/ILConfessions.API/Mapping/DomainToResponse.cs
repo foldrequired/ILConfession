@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using ILConfessions.API.Contracts.V1.Responses;
+using ILConfessions.API.Helpers;
 using ILConfessions.API.Models;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,10 @@ namespace ILConfessions.API.Mapping
         public DomainToResponse()
         {
             CreateMap<Confession, ConfessionResponse>();
+
+            CreateMap<ApplicationUser, UserListResponse>()
+                .ForMember(dest => dest.Age, 
+                           options => options.MapFrom(src => src.DateOfBirth.CalculateAge()));
         }
     }
 }
