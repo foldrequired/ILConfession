@@ -1,6 +1,8 @@
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
+using ILConfessions.API.Contracts.V1.Requests;
 using ILConfessions.API.Contracts.V1.Responses;
 using ILConfessions.API.MagicStringHandlers.V1;
 using ILConfessions.API.Repositories.V1;
@@ -49,6 +51,26 @@ namespace ILConfessions.API.Controllers.V1
             var userResponse = _mapper.Map<UserListResponse>(user);
 
             return Ok(userResponse);
+        }
+
+        [HttpPut(ApiRoutes.Users.Update)]
+        public async Task<IActionResult> Update([FromRoute]string userId, [FromBody]UpdateUserProfileRequest updateUserProfile)
+        {
+            if (userId != User.FindFirst("Id").Value)
+            {
+                return Unauthorized();
+            }
+
+            var userFromRepo = await _repo.GetUser(userId);
+
+            _mapper.Map(updateUserProfile, userFromRepo);
+
+            if (await _repo.SaveAll())
+            {
+                return NoContent();
+            }
+            
+            return NotFound();
         }
     }
 }

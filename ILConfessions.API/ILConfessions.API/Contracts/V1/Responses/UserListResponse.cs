@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using ILConfessions.API.Contracts.V1.Requests;
 
 namespace ILConfessions.API.Contracts.V1.Responses
 {
@@ -20,6 +22,8 @@ namespace ILConfessions.API.Contracts.V1.Responses
 
         public string Country { get; set; }
 
-        public int PhotoUrl { get; set; }
+        public string PhotoUrl { get; set; }
+
+        public ICollection<GetPhotoRequest> Photos { get; set; }
     }
 }

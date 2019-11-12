@@ -32,6 +32,13 @@ namespace ILConfessions.API.MagicStringHandlers.V1
             public const string GetUsers = Base + "/users";
             public const string Get = Base + "/users/{userId}";
             public const string Create = Base + "/users";
+            public const string Update = Base + "/users/{userId}";
+        }
+
+        public static class Photos
+        {
+            public const string Get = Base + "/users/{userId}/photos/{photoId}";
+            public const string Create = Base + "/users/{userId}/photos";
         }
     }
 }

@@ -12,5 +12,6 @@ namespace ILConfessions.API.Repositories.V1
         Task<bool> SaveAll();
         Task<IEnumerable<ApplicationUser>> GetUsers();
         Task<ApplicationUser> GetUser(string id);
+        Task<Photo> GetPhoto(int id);
     }
 }

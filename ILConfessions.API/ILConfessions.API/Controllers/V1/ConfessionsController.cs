@@ -120,7 +120,7 @@ namespace ILConfessions.API.Controllers
         }
 
         [HttpPut(ApiRoutes.Confessions.Update)]
-        public async Task<IActionResult> Update([FromRoute]int confessionId, [FromBody] UpdateConfessionRequest confessionDto)
+        public async Task<IActionResult> Update([FromRoute]int confessionId, [FromBody]UpdateConfessionRequest confessionDto)
         {
             var userOwnsConfession = await _repo.UserOwnsConfessionAsync(confessionId, HttpContext.GetUserId());
 

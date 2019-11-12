@@ -11,5 +11,7 @@ namespace ILConfessions.API.Repositories.V1
         Uri GetConfessionUri(string confessionId);
 
         Uri GetAllConfessionsUri(PaginationQuery pagination = null);
+
+        Uri GetPhotoUri(string userId, int photoId);
     }
 }

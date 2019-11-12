@@ -1,6 +1,8 @@
-﻿using ILConfessions.API.Contracts.V1.Requests;
+﻿using AutoMapper;
+using ILConfessions.API.Contracts.V1.Requests;
 using ILConfessions.API.Contracts.V1.Responses;
 using ILConfessions.API.MagicStringHandlers.V1;
+using ILConfessions.API.Models;
 using ILConfessions.API.Repositories.V1;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -16,13 +18,15 @@ namespace ILConfessions.API.Controllers.V1
         #region Private Readonly Properties
 
         private readonly IAuthRepository _repo;
+        private readonly IMapper _mapper;
 
         #endregion
 
         #region CTOR
 
-        public AuthController(IAuthRepository repo)
+        public AuthController(IAuthRepository repo, IMapper mapper)
         {
+            _mapper = mapper;
             _repo = repo;
         }
 
@@ -39,17 +43,20 @@ namespace ILConfessions.API.Controllers.V1
                 });
             }
 
-            var authRes = await _repo.RegisterAsync(req.Email, req.Password); 
+            //var userCreateRes = _mapper.Map<ApplicationUser>(req);
+
+            var authRes = await _repo.RegisterAsync(req);
 
             if (!authRes.Success)
             {
-                return BadRequest (new AuthFailResponse
+                return BadRequest(new AuthFailResponse
                 {
                     Errors = authRes.Errors
                 });
             }
 
-            return Ok(new AuthSuccessResponse {
+            return Ok(new AuthSuccessResponse
+            {
                 Token = authRes.Token,
                 RefreshToken = authRes.RefreshToken
             });

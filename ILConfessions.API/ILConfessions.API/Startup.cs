@@ -58,6 +58,8 @@ namespace ILConfessions.API
 
             services.AddCors();
 
+            services.Configure<CloudinarySettings>(Configuration.GetSection("CloudinarySettings"));
+
             services.Configure<IdentityOptions>(options => 
             {
                options.Password.RequireDigit = true;

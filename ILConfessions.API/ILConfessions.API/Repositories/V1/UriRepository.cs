@@ -33,5 +33,10 @@ namespace ILConfessions.API.Repositories.V1
 
             return new Uri(modifiedUri);
         }
+
+        public Uri GetPhotoUri(string userId, int photoId)
+        {
+            return new Uri(_baseUri + ApiRoutes.Photos.Get.Replace("{userId}", userId).Replace("{photoId}", photoId.ToString()));
+        }
     }
 }

@@ -5,6 +5,8 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
+using ILConfessions.API.Contracts.V1.Requests;
 using ILConfessions.API.Data;
 using ILConfessions.API.Models;
 using ILConfessions.API.Settings.JwtSettings;
@@ -20,6 +22,7 @@ namespace ILConfessions.API.Repositories.V1
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly JwtOptions _jwtOptions;
         private readonly TokenValidationParameters _tokenValidationParameters;
+        private readonly IMapper _mapper;
         private readonly ApplicationDbContext _db;
 
         public AuthRepository(
@@ -27,6 +30,7 @@ namespace ILConfessions.API.Repositories.V1
             RoleManager<IdentityRole> roleManager,
             JwtOptions jwtOptions,
             TokenValidationParameters tokenValidationParameters,
+            IMapper mapper,
             ApplicationDbContext db
             )
         {
@@ -34,20 +38,27 @@ namespace ILConfessions.API.Repositories.V1
             _roleManager = roleManager;
             _jwtOptions = jwtOptions;
             _tokenValidationParameters = tokenValidationParameters;
+            _mapper = mapper;
             _db = db;
         }
 
-        public async Task<AuthenticationResult> RegisterAsync(string email, string password)
-        {
-            var userExist = await _userManager.FindByEmailAsync(email);
+        public async Task<AuthenticationResult> RegisterAsync(UserRegisterRequest req)
+        { 
+            var userExist = await _userManager.FindByEmailAsync(req.Email);
 
             var newAccount = new ApplicationUser
             {
-                Email = email,
-                UserName = email,
+                Email = req.Email,
+                UserName = req.Email,
+                Gender = req.Gender,
+                KnownAs = req.KnownAs,
+                DateOfBirth = req.DateOfBirth,
+                Country = req.Country,
+                Created = req.Created,
+                LastActive = req.LastActive
             };
 
-            var createdAccount = await _userManager.CreateAsync(newAccount, password);
+            var createdAccount = await _userManager.CreateAsync(newAccount, req.Password);
 
             if (!createdAccount.Succeeded)
                 return new AuthenticationResult
@@ -69,6 +80,8 @@ namespace ILConfessions.API.Repositories.V1
                 };
 
             var userValidPassword = await _userManager.CheckPasswordAsync(user, password);
+
+            var userForReturn = await _db.ApplicationUsers.Include(p => p.Photos).FirstOrDefaultAsync(u => u.UserName == user.UserName);
 
             if (!userValidPassword)
                 return new AuthenticationResult
@@ -157,7 +170,7 @@ namespace ILConfessions.API.Repositories.V1
 
             var claims = new List<Claim>
             {
-                    new Claim(JwtRegisteredClaimNames.Sub, user.Email),
+                    new Claim(JwtRegisteredClaimNames.Sub, user.KnownAs),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                     new Claim(JwtRegisteredClaimNames.Email, user.Email),
                     new Claim("id", user.Id)
@@ -207,7 +220,7 @@ namespace ILConfessions.API.Repositories.V1
             {
                 Success = true,
                 Token = tokenHandler.WriteToken(token),
-                RefreshToken = refreshToken.Token
+                RefreshToken = refreshToken.Token,
             };
         }
 
