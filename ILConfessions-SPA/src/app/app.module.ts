@@ -8,6 +8,7 @@ import { RouterModule } from '@angular/router';
 import { JwtModule } from '@auth0/angular-jwt';
 import { NgxGalleryModule } from 'ngx-gallery';
 import { TimeAgoPipe } from 'time-ago-pipe';
+import { ToastrModule, ToastrService } from 'ngx-toastr';
 
 import { AppComponent } from './app.component';
 import { NavComponent } from './nav/nav.component';
@@ -63,6 +64,11 @@ export class CustomHammerConfig extends HammerGestureConfig {
       HttpClientModule,
       FormsModule,
       ReactiveFormsModule,
+      ToastrModule.forRoot({
+        timeOut: 5000,
+        positionClass: 'toast-bottom-right',
+        preventDuplicates: false
+      }),
       PaginationModule.forRoot(),
       BsDropdownModule.forRoot(),
       BsDatepickerModule.forRoot(),
@@ -83,6 +89,7 @@ export class CustomHammerConfig extends HammerGestureConfig {
       ErrorInterceptorProvider,
       MemberProfileResolver,
       ConfessionListResolver,
+      ToastrService,
       AuthGuard,
       UnsavedChanges,
       { provide: HAMMER_GESTURE_CONFIG, useClass: CustomHammerConfig }

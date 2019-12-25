@@ -2,9 +2,9 @@ import { Component, OnInit, ViewChild, HostListener } from '@angular/core';
 import { User } from 'src/app/_models/user';
 import { ActivatedRoute } from '@angular/router';
 import { UserService } from 'src/app/_services/user.service';
-import { AlertifyService } from 'src/app/_services/alertify.service';
 import { NgForm } from '@angular/forms';
 import { AuthService } from 'src/app/_services/auth.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-member-profile',
@@ -22,7 +22,7 @@ export class MemberProfileComponent implements OnInit {
   }
 
   constructor(private route: ActivatedRoute, private userService: UserService,
-              private authService: AuthService, private alertify: AlertifyService) { }
+              private authService: AuthService, private toastrService: ToastrService) { }
 
   ngOnInit() {
     this.route.data.subscribe(data => {
@@ -32,10 +32,10 @@ export class MemberProfileComponent implements OnInit {
 
   updateUser() {
     this.userService.updateUser(this.authService.decodedToken.id, this.user).subscribe(next => {
-      this.alertify.success('Profile has been updated successfully');
+      this.toastrService.success('Profile has been updated successfully');
       this.editForm.reset(this.user);
     }, err => {
-      this.alertify.error(err);
+      this.toastrService.error(err);
     });
   }
 

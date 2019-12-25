@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../_services/auth.service';
-import { AlertifyService } from '../_services/alertify.service';
 import { Router } from '@angular/router';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { User } from '../_models/user';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-register',
@@ -14,7 +14,7 @@ export class RegisterComponent implements OnInit {
   user: User;
   registerForm: FormGroup;
 
-  constructor(private authService: AuthService, private alertify: AlertifyService,
+  constructor(private authService: AuthService, private toastrService: ToastrService,
               private router: Router, private formBuilder: FormBuilder ) { }
 
   ngOnInit() {
@@ -26,9 +26,9 @@ export class RegisterComponent implements OnInit {
       this.user = Object.assign({}, this.registerForm.value);
     }
     this.authService.register(this.user).subscribe(() => {
-      this.alertify.success('Register successful');
+      this.toastrService.success('Register successful');
     }, err => {
-      this.alertify.error(err);
+      this.toastrService.error(err);
     }, () => {
       this.authService.login(this.user).subscribe(() => {
         this.router.navigate(['/']);

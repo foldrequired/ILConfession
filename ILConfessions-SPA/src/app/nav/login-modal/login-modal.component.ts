@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap';
 import { AuthService } from 'src/app/_services/auth.service';
-import { AlertifyService } from 'src/app/_services/alertify.service';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-login-modal',
@@ -16,16 +16,16 @@ export class LoginModalComponent implements OnInit {
   list: any[] = [];
 
   constructor(public bsModalRef: BsModalRef, private authService: AuthService,
-              private alertify: AlertifyService, private router: Router) { }
+              private router: Router, private toastrService: ToastrService) { }
 
   ngOnInit() {
   }
 
   login() {
     this.authService.login(this.model).subscribe(next => {
-      this.alertify.success('Logged In Successfully');
+      this.toastrService.success('Logged In Successfully');
     }, err => {
-      this.alertify.error('Failed to login, Please try again');
+      this.toastrService.error('Failed to logds');
     }, () => {
       this.router.navigate(['/confessions']);
     });

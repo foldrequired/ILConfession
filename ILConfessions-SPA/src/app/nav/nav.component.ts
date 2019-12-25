@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../_services/auth.service';
-import { AlertifyService } from '../_services/alertify.service';
 import { User } from '../_models/user';
 import { Router } from '@angular/router';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap';
 import { LoginModalComponent } from './login-modal/login-modal.component';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-nav',
@@ -16,7 +16,7 @@ export class NavComponent implements OnInit {
   bsModalRef: BsModalRef;
   user: User;
 
-  constructor(public authService: AuthService, private alertify: AlertifyService,
+  constructor(public authService: AuthService, private toastrService: ToastrService,
               private router: Router, private modalService: BsModalService) { }
 
   ngOnInit() {
@@ -38,7 +38,7 @@ export class NavComponent implements OnInit {
   logout() {
     localStorage.removeItem('token');
     this.authService.decodedToken = null;
-    this.alertify.message('Logged out successfully');
+    this.toastrService.info('Logged out successfully');
     this.router.navigate(['/home']);
   }
 }

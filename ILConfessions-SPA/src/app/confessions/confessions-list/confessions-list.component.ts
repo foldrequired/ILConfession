@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ConfessionService } from 'src/app/_services/confession.service';
-import { AlertifyService } from 'src/app/_services/alertify.service';
 import { ActivatedRoute } from '@angular/router';
 import { Confession } from 'src/app/_models/confession';
 import { Pagination, PaginationResult } from 'src/app/_models/pagination';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-confessions-list',
@@ -15,7 +15,7 @@ export class ConfessionsListComponent implements OnInit {
   cities: any;
   pagination: Pagination;
 
-  constructor(private confessionService: ConfessionService, private alertify: AlertifyService, private route: ActivatedRoute) { }
+  constructor(private confessionService: ConfessionService, private toastrService: ToastrService, private route: ActivatedRoute) { }
 
   ngOnInit() {
     this.route.data.subscribe(data => {
@@ -35,7 +35,7 @@ export class ConfessionsListComponent implements OnInit {
       this.confessions = next.result;
       this.pagination = next.pagination;
     }, err => {
-      this.alertify.error(err);
+      this.toastrService.error(err);
     });
   }
 }

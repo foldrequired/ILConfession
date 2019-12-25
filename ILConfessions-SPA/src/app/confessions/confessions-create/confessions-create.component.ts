@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { AlertifyService } from 'src/app/_services/alertify.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Confession } from 'src/app/_models/confession';
 import { ConfessionService } from 'src/app/_services/confession.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-confessions-create',
@@ -14,7 +14,7 @@ export class ConfessionsCreateComponent implements OnInit {
   confession: Confession;
   createConfessionForm: FormGroup;
 
-  constructor(private confessionService: ConfessionService, private alertify: AlertifyService,
+  constructor(private confessionService: ConfessionService, private toastrService: ToastrService,
               private router: Router, private formBuilder: FormBuilder) { }
 
   ngOnInit() {
@@ -26,9 +26,9 @@ export class ConfessionsCreateComponent implements OnInit {
       this.confession = Object.assign({}, this.createConfessionForm.value);
     }
     this.confessionService.createConfession(this.confession).subscribe(() => {
-      this.alertify.success('Confession created successfully');
+      this.toastrService.success('Confession created successfully');
     }, err => {
-      this.alertify.error(err);
+      this.toastrService.error(err);
     }, () => {
         this.router.navigate(['/confessions']);
     });

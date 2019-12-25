@@ -1,20 +1,20 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, Router } from '@angular/router';
 import { AuthService } from '../_services/auth.service';
-import { AlertifyService } from '../_services/alertify.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthGuard implements CanActivate {
-  constructor(private authService: AuthService, private router: Router, private alertify: AlertifyService) {}
+  constructor(private authService: AuthService, private router: Router, private toastrService: ToastrService) {}
 
   canActivate(): boolean {
     if (this.authService.loggedIn()) {
       return true;
     }
 
-    this.alertify.error('Only valid users are allowed to visit that page');
+    this.toastrService.error('Only valid users are allowed to visit that page');
     this.router.navigate(['/']);
     return false;
   }
