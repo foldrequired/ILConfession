@@ -23,5 +23,13 @@ namespace ILConfessions.API.ExtensionMethods
 
             return httpContext.User.Claims.Single(c => c.Type == "email").Value;
         }
+
+        public static string GetUserKnownAs(this HttpContext httpContext)
+        {
+            if (httpContext.User == null)
+                return string.Empty;
+
+            return httpContext.User.Claims.Single(c => c.Type == "knownas").Value;
+        }
     }
 }

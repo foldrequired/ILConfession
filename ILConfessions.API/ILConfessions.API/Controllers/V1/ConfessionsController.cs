@@ -12,17 +12,19 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace ILConfessions.API.Controllers
 {
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)] //Bearer
+    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)] //Bearer
     [Produces("application/json")]
     public class ConfessionsController : Controller
     {
         #region Private Readonly Properties
 
         private readonly IConfessionRepository _repo;
+        private readonly IUserRepository _userRepo;
         private readonly IMapper _mapper;
         private readonly IUriRepository _uriRepository;
 
@@ -30,8 +32,9 @@ namespace ILConfessions.API.Controllers
 
         #region CTOR
         
-        public ConfessionsController(IConfessionRepository repo, IMapper mapper, IUriRepository uriRepository)
+        public ConfessionsController(IConfessionRepository repo, IMapper mapper, IUriRepository uriRepository, IUserRepository userRepo)
         {
+            _userRepo = userRepo;
             _repo = repo;
             _mapper = mapper;
             _uriRepository = uriRepository;
@@ -49,18 +52,18 @@ namespace ILConfessions.API.Controllers
         {
             var pagination = _mapper.Map<PaginationFilter>(paginationQuery);
 
-            var confessions = await _repo.GetConfessionsAsync(pagination);
+            var confessions = await _repo.GetConfessionsAsync(paginationQuery);
 
             var confessionsResponse = _mapper.Map<List<ConfessionResponse>>(confessions);
 
             if (pagination == null || pagination.PageNumber < 1 || pagination.PageSize < 1)
             {
-                return Ok(new PagedResponse<ConfessionResponse>(confessionsResponse));
+                return Ok(new PagedResponse<ConfessionResponse>(confessionsResponse, confessions.TotalCount, confessions.PageNumber, confessions.PageSize));
             }
 
-            var paginationResponse = PaginationHelpers.CreatePaginationResponse(_uriRepository, pagination, confessionsResponse);
+            Response.AddPagination(confessions.PageNumber, confessions.PageSize, confessions.TotalCount, confessions.TotalPages);
 
-            return Ok(paginationResponse);
+            return Ok(confessionsResponse);
         }
 
         [HttpGet(ApiRoutes.Confessions.Get)]
@@ -79,6 +82,8 @@ namespace ILConfessions.API.Controllers
                 Title = confession.Title,
                 Description = confession.Description,
                 UserId = confession.UserId,
+                KnownAs = confession.KnownAs,
+                City = confession.City,
                 CreatedDate = confession.CreatedDate
             });
         }
@@ -91,7 +96,14 @@ namespace ILConfessions.API.Controllers
         [HttpPost(ApiRoutes.Confessions.Create)]
         public async Task<IActionResult> Create([FromBody] CreateConfessionRequest confessionDto)
         {
-            var confession = new Confession { Title = confessionDto.Title, Description = confessionDto.Description, UserId = HttpContext.GetUserId() };
+            var confession = new Confession
+            {
+                Title = confessionDto.Title,
+                Description = confessionDto.Description,
+                UserId = HttpContext.GetUserId(),
+                KnownAs = User.FindFirstValue(ClaimTypes.NameIdentifier),
+                City = confessionDto.City
+            };
 
             var createdConfession = await _repo.CreateConfessionAsync(confession);
             if (!createdConfession)
@@ -112,7 +124,9 @@ namespace ILConfessions.API.Controllers
                 Id = confession.Id,
                 Title = confession.Title,
                 Description = confession.Description,
+                City = confession.City,
                 UserId = confession.UserId,
+                KnownAs = confession.KnownAs,
                 CreatedDate = confession.CreatedDate
             };
 

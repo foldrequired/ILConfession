@@ -1,6 +1,6 @@
 <div class="container mt-4">
-  <div class="row">
-    <div class="col-sm-4 mb-2">
+  <div class="">
+    <div class="col-sm mb-3">
         <h1>{{ user.knownAs }}'s Profile</h1>
     </div>
     <div class="col-sm-5">
@@ -9,18 +9,18 @@
       </div>
     </div>
   </div>
-  <div class="row">
-    <div class="col-sm-4">
-      <div class="">
+  <div class="">
+    <div class="">
+      <div class="col-sm">
         <div class="">
           <h5>Age:</h5>
           <p>{{ user.age }}.</p>
           <h5>Creation Date:</h5>
-          <p>{{ user.created }}.</p>
+          <p>{{ user.created | date: 'mediumDate' }}.</p>
         </div>
       </div>
     </div>
-    <div class="col-sm-8">
+    <div class="col-sm-3">
       <div class="tab-panel">
         <tabset class="">
           <tab heading="Edit Profile">
@@ -45,8 +45,8 @@
               </div>
             </form>
           </tab>
-          <tab heading="Edit Profile Picture">
-            <p>In development...</p>
+          <tab heading="Test">
+            <p>Under development...</p>
           </tab>
         </tabset>
         <div class="mt-3">

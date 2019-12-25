@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ILConfessions.API.Contracts.V1.Requests.Queries;
+using ILConfessions.API.Contracts.V1.Responses;
 using ILConfessions.API.Data;
 using ILConfessions.API.Models;
 using Microsoft.EntityFrameworkCore;
@@ -25,17 +27,19 @@ namespace ILConfessions.API.Repositories.V1
 
         #endregion
 
-        public async Task<List<Confession>> GetConfessionsAsync(PaginationFilter paginationFilter = null)
+        public async Task<PagedResponse<Confession>> GetConfessionsAsync(PaginationQuery paginationQuery = null)
         {
-            if (paginationFilter == null)
-            {
-                return await _db.Confessions.ToListAsync();
+            var confessions = _db.Confessions.OrderByDescending(c => c.CreatedDate);
 
-            }
+            // if (paginationFilter == null)
+            // {
+            //     return await confessions;
+            // }
 
-            var skip = (paginationFilter.PageNumber - 1) * paginationFilter.PageSize;
+            //var skip = (paginationFilter.PageNumber - 1) * paginationFilter.PageSize;
 
-            return await _db.Confessions.Skip(skip).Take(paginationFilter.PageSize).ToListAsync();
+            //return await _db.Confessions.Skip(skip).Take(paginationFilter.PageSize).ToListAsync();
+            return await PagedResponse<Confession>.CreateAsync(confessions, paginationQuery.PageNumber, paginationQuery.PageSize);
         }
 
         public async Task<Confession> GetConfessionByIdAsync(int id)

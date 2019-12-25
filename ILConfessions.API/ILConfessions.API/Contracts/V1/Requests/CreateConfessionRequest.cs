@@ -10,5 +10,7 @@ namespace ILConfessions.API.Contracts.V1.Requests
         public string Title { get; set; }
 
         public string Description { get; set; }
+
+        public string City { get; set; }
     }
 }

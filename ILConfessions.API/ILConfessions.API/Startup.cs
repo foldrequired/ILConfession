@@ -114,6 +114,7 @@ namespace ILConfessions.API
             services.AddScoped<IConfessionRepository, ConfessionRepository>();
             services.AddScoped<IAuthRepository, AuthRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<UserActivity>();
             services.AddSingleton<IUriRepository>(provider =>
             {
                 var accessor = provider.GetRequiredService<IHttpContextAccessor>();
@@ -210,7 +211,7 @@ namespace ILConfessions.API
             app.UseStaticFiles();
 
             app.UseAuthentication();
-            app.UseCors(c => c.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+            app.UseCors(c => c.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().WithExposedHeaders("Pagination"));
             app.UseMvc();
         }
     }

@@ -19,7 +19,5 @@ namespace ILConfessions.API.Data
         public DbSet<RefreshToken> RefreshTokens { get; set; }
 
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
-
-        public DbSet<Photo> Photos { get; set; }
     }
 }

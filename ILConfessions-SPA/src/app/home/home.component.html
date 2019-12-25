@@ -1,16 +1,37 @@
 <div *ngIf="!loggedIn()" class="container mt-5">
   <div class="text-center">
-    <h1 class="mb-3">Sign up to the website</h1>
-    <div class="text-center">
-      <a class="btn btn-primary mr-1" [routerLink]="['/register']" >Register</a> <!-- Navigate to Register with Routing -->
-      <button class="btn btn-info">More info</button>
+    <h1 class="mb-3">Welcome to ILConfessions Website, <br /> VISIT > SHARE is our moto</h1>
+    <div class="text-center btn-group">
+      <a class="btn btn-primary" [routerLink]="['/register']" >Register</a> <!-- Navigate to Register with Routing -->
+      <a class="btn btn-info" [routerLink]="['/info']" >Site info</a>
+      <a class="btn btn-success" [routerLink]="['/confessions']" >Confessions</a>
     </div>
   </div>
 
   <div class="container">
     <div class="row justify-content-center">
       <div class="col-4">
+        <p></p>
       </div>
     </div>
   </div>
 </div>
+
+<div *ngIf="loggedIn()" class="container mt-5">
+    <div class="text-center">
+      <h1 class="mb-3">Navigator</h1>
+      <div class="text-center btn-group">
+        <a class="btn btn-primary" [routerLink]="['/confessions']" >Confessions</a> <!-- Navigate to Confessions with Routing -->
+        <a class="btn btn-info" [routerLink]="['/info']" >Site info</a>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-4">
+          <p></p>
+        </div>
+      </div>
+    </div>
+  </div>
+

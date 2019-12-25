@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using ILConfessions.API.Contracts.V1.Requests;
 using ILConfessions.API.Contracts.V1.Responses;
+using ILConfessions.API.Helpers;
 using ILConfessions.API.MagicStringHandlers.V1;
 using ILConfessions.API.Repositories.V1;
 using Microsoft.AspNetCore.Authorization;
@@ -11,6 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ILConfessions.API.Controllers.V1
 {
+    [ServiceFilter(typeof(UserActivity))]
     [Authorize]
     [Produces("application/json")]
     public class UsersController : Controller

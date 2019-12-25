@@ -1,17 +1,16 @@
 <nav class="navbar navbar-expand-md navbar-dark bg-primary">
   <div class="container">
-  <a class="navbar-brand" [routerLink]="['/home']" >ILConfessions</a>
+  <a class="navbar-brand pb-2" [routerLink]="['/']" >ILConfessions</a>
 
     <ul class="navbar-nav mr-auto">
       <li class="nav-item" routerLinkActive="active">
         <a class="nav-link" [routerLink]="['/confessions']" >Confessions</a>
       </li>
+      <!--
       <li *ngIf="loggedIn()" class="nav-item" routerLinkActive="active">
-        <a class="nav-link" [routerLink]="['/members']" >Members</a>
+        <a class="nav-link" [routerLink]="['/messages']" >PM</a>
       </li>
-      <li *ngIf="loggedIn()" class="nav-item" routerLinkActive="active">
-        <a class="nav-link" [routerLink]="['/messages']" >Private Messages</a>
-      </li>
+      -->
     </ul>
 
     <div *ngIf="loggedIn()" class="dropdown" dropdown>
@@ -19,17 +18,13 @@
         Welcome {{ this.authService.decodedToken.sub | titlecase }}
       </a>
       <div class="dropdown-menu mt-3" *dropdownMenu>
-        <a class="dropdown-item" [routerLink]="['/member/profile']" >Edit Profile</a>
+        <a class="dropdown-item" [routerLink]="['/profile']" >Edit Profile</a>
         <hr>
         <a class="dropdown-item" (click)="logout()">Logout</a>
       </div>
     </div>
 
-    <form *ngIf="!loggedIn()" #loginForm="ngForm" (ngSubmit)="login()" class="form-inline my-2 my-lg-0">
-      <input class="form-control mr-sm-2" type="text" required placeholder="Email..." autocomplete="email" name="email" [(ngModel)]="model.email">
-      <input class="form-control mr-sm-2" type="password" required placeholder="Password..." autocomplete="password" name="password" [(ngModel)]="model.password">
-      <button [disabled]="!loginForm.valid" class="btn btn-success my-2 my-sm-0" type="submit">Login</button>
-    </form>
+    <button *ngIf="!loggedIn()" class="btn btn-primary" (click)="loginModal()">Login</button>
 
   </div>
 </nav>

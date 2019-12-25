@@ -21,9 +21,5 @@ namespace ILConfessions.API.Contracts.V1.Responses
         public string Gender { get; set; }
 
         public string Country { get; set; }
-
-        public string PhotoUrl { get; set; }
-
-        public ICollection<GetPhotoRequest> Photos { get; set; }
     }
 }

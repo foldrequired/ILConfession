@@ -1,4 +1,6 @@
-﻿using ILConfessions.API.Models;
+﻿using ILConfessions.API.Contracts.V1.Requests.Queries;
+using ILConfessions.API.Contracts.V1.Responses;
+using ILConfessions.API.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +10,7 @@ namespace ILConfessions.API.Repositories.V1
 {
     public interface IConfessionRepository
     {
-        Task<List<Confession>> GetConfessionsAsync(PaginationFilter paginationFilter = null);
+        Task<PagedResponse<Confession>> GetConfessionsAsync(PaginationQuery paginationQuery);
 
         Task<Confession> GetConfessionByIdAsync(int id);
 

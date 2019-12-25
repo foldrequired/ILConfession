@@ -1,0 +1,39 @@
+<div class="container">
+  <div class="text-right mt-4">
+    <button class="form-control col-sm-2 btn btn-success" [routerLink]="['/confessions/create']" routerLinkActive="router-link-active" >NEW CONFESSION</button>
+  </div>
+  <div class="mt-4">
+      <div class="row"> <!-- *ngFor="let city of cities" -->
+          <a class="nav-link col-sm btn btn-primary mr-1" [routerLink]="['/confessions']" routerLinkActive="active" >All Cities</a>
+          <a class="nav-link col-sm btn btn-primary mr-1" [routerLink]="['/confessions']" routerLinkActive="active" >Yavne</a>
+          <a class="nav-link col-sm btn btn-primary mr-1" [routerLink]="['/confessions']" routerLinkActive="active" >Rehovot</a>
+          <a class="nav-link col-sm btn btn-primary" [routerLink]="['/confessions']" routerLinkActive="active" >Tel-Aviv</a>
+      </div>
+  </div>
+  <div class="row">
+    <div class="col-12">
+          <ul class="list-group mt-2 mb-2">
+            <li *ngFor="let confession of confessions" class="list-group-item row">
+              <div class="row">
+                  <a class="nav-link col-sm-8" [routerLink]="['/confessions', confession.id]">{{ confession.title }}
+                    <span>&nbsp;({{ confession.knownAs }})</span>
+                    <span>&nbsp;-&nbsp;{{ confession.city | uppercase }}</span>
+                  </a>
+                  <span class="col-sm-2 nav-link">X Comments</span>
+                  <span class="col-sm-2 nav-link">{{ confession.createdDate | date: 'mediumDate' }}</span>
+              </div>
+            </li>
+          </ul>
+    </div>
+  </div>
+</div>
+<div class="d-flex justify-content-center col-xs-12 col-12">
+  <pagination
+    [boundaryLinks]="true"
+    [totalItems]="pagination.totalItems"
+    [itemsPerPage]="pagination.itemsPerPage"
+    [(ngModel)]="pagination.currentPage"
+    (pageChanged)="pageChanged($event)"
+  >
+  </pagination>
+</div>

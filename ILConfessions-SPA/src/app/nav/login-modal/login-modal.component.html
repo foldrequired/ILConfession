@@ -1,0 +1,19 @@
+<div class="modal-header">
+  <h4 class="modal-title pull-left">{{title}}</h4>
+  <button type="button" class="close pull-right" aria-label="Close" (click)="bsModalRef.hide()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <form #loginForm="ngForm" id="loginForm" (ngSubmit)="login()">
+    <div>
+      <input class="form-control mb-sm-2" type="text" required placeholder="Email..." autocomplete="email" name="email" [(ngModel)]="model.email">
+      <input class="form-control" type="password" required placeholder="Password..." autocomplete="password" name="password" [(ngModel)]="model.password">
+    </div>
+  </form>
+</div>
+<div class="modal-footer" dir="ltr">
+  <button type="button" class="btn btn-default mr-auto" (click)="bsModalRef.hide()">{{closeBtnName}}</button>
+  <button type="button" class="btn btn-primary" [routerLink]="['/register']" (click)="bsModalRef.hide()" >Register</button>
+  <button type="button" class="btn btn-success" type="submit" form="loginForm" [routerLink]="['/']" (click)="bsModalRef.hide()">Login</button>
+</div>

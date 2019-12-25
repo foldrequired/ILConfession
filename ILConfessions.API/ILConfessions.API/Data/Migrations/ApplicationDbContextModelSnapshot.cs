@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace ILConfessions.API.Data.Migrations
+namespace ILConfessions.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     partial class ApplicationDbContextModelSnapshot : ModelSnapshot
@@ -90,9 +90,13 @@ namespace ILConfessions.API.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("City");
+
                     b.Property<DateTime>("CreatedDate");
 
                     b.Property<string>("Description");
+
+                    b.Property<string>("KnownAs");
 
                     b.Property<string>("Title");
 
@@ -103,31 +107,6 @@ namespace ILConfessions.API.Data.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Confessions");
-                });
-
-            modelBuilder.Entity("ILConfessions.API.Models.Photo", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<DateTime>("DateAdded");
-
-                    b.Property<string>("Description");
-
-                    b.Property<bool>("IsMain");
-
-                    b.Property<string>("PublicId");
-
-                    b.Property<string>("Url");
-
-                    b.Property<string>("UserId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Photos");
                 });
 
             modelBuilder.Entity("ILConfessions.API.Models.RefreshToken", b =>
@@ -272,13 +251,6 @@ namespace ILConfessions.API.Data.Migrations
                 {
                     b.HasOne("ILConfessions.API.Models.ApplicationUser", "User")
                         .WithMany()
-                        .HasForeignKey("UserId");
-                });
-
-            modelBuilder.Entity("ILConfessions.API.Models.Photo", b =>
-                {
-                    b.HasOne("ILConfessions.API.Models.ApplicationUser", "User")
-                        .WithMany("Photos")
                         .HasForeignKey("UserId");
                 });
 

@@ -7,19 +7,13 @@ namespace ILConfessions.API.Contracts.V1.Requests.Queries
 {
     public class PaginationQuery
     {
-        public PaginationQuery()
+        private const int MaxPageSize = 15;
+        public int PageNumber { get; set; } = 1;
+        private int pageSize = 10;
+        public int PageSize
         {
-            PageNumber = 1;
-            PageSize = 100;
+            get { return pageSize; }
+            set { pageSize = (value > MaxPageSize) ? MaxPageSize : value; }
         }
-
-        public PaginationQuery(int pageNumber, int pageSize)
-        {
-            PageNumber = pageNumber;
-            PageSize = pageSize;
-        }
-
-        public int PageNumber { get; set; }
-        public int PageSize { get; set; }
     }
 }

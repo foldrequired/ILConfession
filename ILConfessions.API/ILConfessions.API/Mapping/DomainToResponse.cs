@@ -22,10 +22,6 @@ namespace ILConfessions.API.Mapping
 
             CreateMap<UpdateUserProfileRequest, ApplicationUser>();
 
-            CreateMap<Photo, GetPhotoRequest>();
-
-            CreateMap<CreatePhotoRequest, Photo>();
-
             CreateMap<UserRegisterRequest, ApplicationUser>();
 
             //CreateMap<UserAuthRequest, ApplicationUser>();

@@ -17,9 +17,13 @@ namespace ILConfessions.API.Models
 
         public string Description { get; set; }
 
+        public string City { get; set; }
+
         public DateTime CreatedDate { get; set; }
 
         public string UserId { get; set; }
+
+        public string KnownAs { get; set; }
 
         [ForeignKey(nameof(UserId))]
         public ApplicationUser User { get; set; }

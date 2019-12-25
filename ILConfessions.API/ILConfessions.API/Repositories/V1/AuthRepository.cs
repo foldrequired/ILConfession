@@ -81,7 +81,7 @@ namespace ILConfessions.API.Repositories.V1
 
             var userValidPassword = await _userManager.CheckPasswordAsync(user, password);
 
-            var userForReturn = await _db.ApplicationUsers.Include(p => p.Photos).FirstOrDefaultAsync(u => u.UserName == user.UserName);
+            var userForReturn = await _db.ApplicationUsers.FirstOrDefaultAsync(u => u.UserName == user.UserName);
 
             if (!userValidPassword)
                 return new AuthenticationResult

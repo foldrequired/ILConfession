@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ILConfessions.API.Contracts.V1.Requests.Queries;
 using ILConfessions.API.Contracts.V1.Responses;
+using ILConfessions.API.Data;
 using ILConfessions.API.Models;
 using ILConfessions.API.Repositories.V1;
 
@@ -14,10 +15,10 @@ namespace ILConfessions.API.Helpers
         public static PagedResponse<T> CreatePaginationResponse<T>(IUriRepository uriRepository, PaginationFilter pagination, List<T> response)
         {
             var nextPage = pagination.PageNumber >= 1 ? uriRepository
-                .GetAllConfessionsUri(new PaginationQuery(pagination.PageNumber + 1, pagination.PageSize)).ToString() : null;
+                .GetAllConfessionsUri(new PaginationQuery/*(pagination.PageNumber + 1, pagination.PageSize)).ToString()*/()) : null;
 
             var previousPage = pagination.PageNumber - 1 >= 1 ? uriRepository
-                .GetAllConfessionsUri(new PaginationQuery(pagination.PageNumber - 1, pagination.PageSize)).ToString() : null;
+                .GetAllConfessionsUri(new PaginationQuery/*(pagination.PageNumber - 1, pagination.PageSize)).ToString()*/()) : null;
 
             // Solution without Mapper
             /*var confessionResponse = confessions.Select(conf => new ConfessionResponse
@@ -34,13 +35,12 @@ namespace ILConfessions.API.Helpers
 
             return Ok(new PagedResponse<ConfessionResponse>(confessionResponse));*/
 
-           return new PagedResponse<T>
+            return new PagedResponse<T>
             {
                 Data = response,
-                PageNumber = pagination.PageNumber >= 1 ? pagination.PageNumber : (int?)null,
-                PageSize = pagination.PageSize >= 1 ? pagination.PageSize : (int?)null,
-                NextPage = response.Any() ? nextPage : null,
-                PreviousPage = previousPage
+                PageNumber = pagination.PageNumber >= 1 ? pagination.PageNumber : 1,
+                PageSize = pagination.PageSize >= 1 ? pagination.PageSize : 5,
+                NextPage = null //response.Any() ? nextPage : null,
             };
         }
     }

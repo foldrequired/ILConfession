@@ -3,6 +3,8 @@ import { AuthService } from '../_services/auth.service';
 import { AlertifyService } from '../_services/alertify.service';
 import { User } from '../_models/user';
 import { Router } from '@angular/router';
+import { BsModalService, BsModalRef } from 'ngx-bootstrap';
+import { LoginModalComponent } from './login-modal/login-modal.component';
 
 @Component({
   selector: 'app-nav',
@@ -11,22 +13,22 @@ import { Router } from '@angular/router';
 })
 export class NavComponent implements OnInit {
   model: any = {};
+  bsModalRef: BsModalRef;
   user: User;
-  userWelcomeName: string;
 
-  constructor(public authService: AuthService, private alertify: AlertifyService, private router: Router) { }
+  constructor(public authService: AuthService, private alertify: AlertifyService,
+              private router: Router, private modalService: BsModalService) { }
 
   ngOnInit() {
   }
 
-  login() {
-    this.authService.login(this.model).subscribe(next => {
-      this.alertify.success('Logged In Successfully');
-    }, err => {
-      this.alertify.error('Failed to login, Please try again');
-    }, () => {
-      this.router.navigate(['/confessions']);
-    });
+  loginModal(loginM: any) {
+    const initialState = {
+      loginM,
+      title: 'ConfessionsIL - Login Modal'
+    };
+    this.bsModalRef = this.modalService.show(LoginModalComponent, {initialState});
+    this.bsModalRef.content.closeBtnName = 'Close';
   }
 
   loggedIn() {

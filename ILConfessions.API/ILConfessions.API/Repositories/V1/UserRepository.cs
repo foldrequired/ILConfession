@@ -26,23 +26,16 @@ namespace ILConfessions.API.Repositories.V1
             _db.Remove(entity);
         }
 
-        public async Task<Photo> GetPhoto(int id)
-        {
-            var photo = await _db.Photos.FirstOrDefaultAsync(p => p.Id == id);
-
-            return photo;
-        }
-
         public async Task<ApplicationUser> GetUser(string id)
         {
-            var user = await _db.Users.Include(p => p.Photos).FirstOrDefaultAsync(u => u.Id == id);
+            var user = await _db.Users.FirstOrDefaultAsync(u => u.Id == id);
 
             return user;
         }
 
         public async Task<IEnumerable<ApplicationUser>> GetUsers()
         {
-            var users = await _db.Users.Include(p => p.Photos).ToListAsync();
+            var users = await _db.Users.ToListAsync();
 
             return users;
         }

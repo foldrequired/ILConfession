@@ -14,7 +14,8 @@ namespace ILConfessions.API.Settings.SwaggerSettings.SwaggerExamples.Requests
             return new CreateConfessionRequest
             {
                 Title = "new title",
-                Description = "new description"
+                Description = "new description",
+                City = "all cities"
             };
         }
     }

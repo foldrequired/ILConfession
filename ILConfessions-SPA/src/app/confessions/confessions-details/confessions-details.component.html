@@ -1,0 +1,18 @@
+<div class="container text-center mt-5">
+  <div>
+    <h1>{{ confession?.title }}</h1>
+    <h5 class="mt-2 mb-4">
+      {{ confession?.knownAs }} | {{ confession?.city }} -
+      {{ confession?.createdDate | date: "short" }}
+    </h5>
+    <p class="text-center col-sm">{{ confession?.description }}</p>
+  </div><br /><br />
+  <div>
+    <button class="btn btn-success">Leave a comment</button>
+    <h5 class="mt-3">Users Comments (X)</h5>
+    Under development...
+    <div *ngFor="let comment of comments">
+
+    </div>
+  </div>
+</div>
